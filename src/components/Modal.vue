@@ -25,7 +25,6 @@ export default {
     },
     methods: {
         changeAlerting: function() {
-            console.log(this.$refs);
             this.$emit('changeAlerting');
         },
         confirm: function(){

@@ -1,7 +1,8 @@
 <template>
     <div id="newTaskBar">
-        <input type="text" v-model="newTask" @keyup.enter="addTask">
+        <input id="newTaskBarInput" type="text" v-model="newTask" @keyup.enter="addTask" placeholder="Add a new task">
         <button @click="addTask">Add task</button>
+        <label for="newTaskBarInput">Add a new task</label>
         <p>{{message}}&nbsp;</p>
     </div>
 </template>
@@ -42,7 +43,7 @@ export default {
 
 <style scoped>
     * {
-        font-family: 'Avenir';
+        font-family: 'Montserrat';
     }
     #newTaskBar {
         margin-top: 3rem;
@@ -53,7 +54,7 @@ export default {
     }
     @media(min-width: 600px){
         #newTaskBar {
-            grid-template-columns: 1fr 102px;
+            grid-template-columns: 1fr 110px;
         }
     }
     input[type="text"]{
@@ -63,11 +64,23 @@ export default {
         margin: 0 0 2px 0;
         position: relative;
         top: 3px;
+        overflow: visible;
+        background: #fff;
+        z-index: 3;
+    }
+    ::placeholder {
+        color: #ddd;
     }
     input[type="text"]:focus{
         outline: none;
         border-bottom: 3px double;
         margin-bottom: 0px;
+    }
+    input:not(:placeholder-shown):before {
+        content: 'osdifh';
+        position: absolute;
+        top: 0;
+        left: 0;
     }
     p {
         color: red;        
@@ -78,5 +91,19 @@ export default {
     }
     button {
         justify-self: flex-end;
+    }
+    p, label {
+        grid-column: 1 / -1;
+    }
+    label {
+        color: #a7a8aa;
+        font-size: .5em;
+        font-weight: bold;
+        position: relative;
+        top: -2rem;
+        transition: top .2s ease-in-out;
+    }
+    input:not(:placeholder-shown) ~ label {
+        top: -4.2rem;
     }
 </style>

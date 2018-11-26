@@ -51,10 +51,8 @@ export default {
       if(!allChecked){
         inputs.forEach(input => input.checked = 'checked');
       } else {
-        console.log('uncheckem')
         inputs.forEach(input => {
           input.checked = false;
-          console.log(input.checked);
         });
       }
     },
@@ -85,11 +83,9 @@ export default {
       const deleteIDs = allTasks.map(ID => {
         return parseInt(ID.id.replace('del-', ''));
       });
-      console.log(deleteIDs);
       const newTasks = this.tasks.filter(task => {
         return deleteIDs.indexOf(task.id) >= 0 ? null : task;
       });
-      console.log(newTasks);
 
       this.tasks = newTasks;
       localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
@@ -109,12 +105,15 @@ export default {
 
 
 <style>
+  :root {
+    --jcBlack: #53565a;
+  }
   #app {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
     font-size: calc(.7em + 1vw);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: #53565a;
+    color: var(--jcBlack);
     width: 100%;
     max-width: 600px;
     margin: auto;
@@ -126,9 +125,10 @@ export default {
     }
   }
   button {
-    font-family: 'Avenir';
+    font-family: 'Montserrat';
     background: transparent;
-    border: 1px solid #53565a;
+    border: 1px solid var(--jcBlack);
+    color: var(--jcBlack);
     padding: .5rem 1rem;
     margin: 0;
     font-size: 1rem;
@@ -138,13 +138,13 @@ export default {
   }
   button:hover {
     color: white;
-    background-color: #53565a;
+    background-color: var(--jcBlack);
   }
   button:first-of-type{
     margin-left: 0;
   }
   button:focus {
-    outline: 1px solid #53565a;
+    outline: 1px solid var(--jcBlack);
     outline-offset: 1px;
   }
   .fade-enter-active, .fade-leave-active {
@@ -159,5 +159,8 @@ export default {
   .fadeDown-enter, .fadeDown-leave-to {
       opacity: 0;
       transform: translateY(-1.2em);
+  }
+  input {
+    color: var(--jcBlack);
   }
 </style>

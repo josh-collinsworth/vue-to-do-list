@@ -50,10 +50,13 @@ export default {
         display: inline-block;
     }
     li {
+        font-family: 'Montserrat';
+        font-size: .9em;
         box-sizing: border-box;
         width: 100%;
         transition: all .15s ease-out;
         position: relative;
+        overflow: hidden;
     }
     li:hover {
         transform: translateX(-.5rem);
@@ -62,17 +65,21 @@ export default {
         width: calc(100% + .5rem);
     }
     button.delete {
+        transition: .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
         box-sizing: border-box;
         border: 3px solid white;
         background: none;
         border-radius: 100%;
         margin-left: .5rem;
-        position: relative;
+        position: absolute;
+        right: 1rem;
+        top: calc(100%);
         width: 2rem;
         height: 2rem;
         background: red;
         color: white;
-        display: none;
+        display: flex;
+        padding-top: 100%;
         text-align: center;
         justify-content: center;
         align-items: center;
@@ -119,5 +126,6 @@ export default {
     }
     input[type="checkbox"]:checked  ~ button.delete {
         display: flex;
+        top: calc(50% - 1rem);
     }
 </style>
