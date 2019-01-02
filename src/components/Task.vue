@@ -3,7 +3,7 @@
         <li>
             <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
             <label :for="taskId" >{{task}}</label>
-            <button @click="removeTask" class="delete" :id="`del-${taskId}`"></button>
+            <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="taskChecked ? 0 : -1" :aria-hidden="taskChecked ? false : true"></button>
         </li>
     </transition>
 </template>
@@ -27,6 +27,9 @@ export default {
     calculated: {
         getTaskList(){
             return this.props.todos;
+        },
+        isTabable(){
+            return this.taskChecked ? "0" : "-1";
         }
     },
     methods: {

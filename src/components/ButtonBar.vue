@@ -1,7 +1,7 @@
 <template>
     <div id="buttonBar">
-        <button @click="$emit('selectAll')">Check all</button>
-        <button @click="$emit('deleteAllChecked')">Delete All Checked</button>
+        <button @click="$emit('selectAll')"><span v-if="allAreChecked">Unc</span><span v-else>C</span>heck all</button>
+        <button @click="$emit('deleteAllChecked')" :disabled="anyAreChecked ? null : 'disabled'">Delete All Checked</button>
         <button @click="$emit('deleteAll')">Delete All and Reset</button>
     </div>
 </template>
@@ -11,8 +11,8 @@
 export default {
     name: 'ButtonBar',
     props: {
-    },
-    components: {
+        allAreChecked: Boolean,
+        anyAreChecked: Boolean
     }
 }
 </script>

@@ -45,7 +45,7 @@ export default {
         font-family: 'Montserrat';
     }
     #newTaskBar {
-        margin-top: 3rem;
+        margin-top: 4rem;
         width: 100%;
         display: grid;
         grid-gap: 1rem;
@@ -66,6 +66,8 @@ export default {
         overflow: visible;
         background: #fff;
         z-index: 3;
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
     }
     ::placeholder {
         color: #ddd;
@@ -75,12 +77,12 @@ export default {
         border-bottom: 3px double;
         margin-bottom: 0px;
     }
-    input:not(:placeholder-shown):before {
+    /* input:not(:placeholder-shown):before {
         content: 'osdifh';
         position: absolute;
         top: 0;
         left: 0;
-    }
+    } */
     p {
         color: red;        
         margin-bottom: 3rem;
@@ -99,10 +101,12 @@ export default {
         font-size: .5em;
         font-weight: bold;
         position: relative;
-        top: -2rem;
+        top: .5rem;
+        grid-row: 1 / 2;
+        grid-column: 1 / 2;
         transition: top .2s ease-in-out;
     }
     input:not(:placeholder-shown) ~ label {
-        top: -4.2rem;
+        top: -1.2rem;
     }
 </style>
