@@ -5,7 +5,7 @@
     </transition>
     <h1>Vue To-Do List</h1>
     <NewTaskEntry :todos="this.tasks"/>
-    <TaskList :todos="this.tasks" @removeTask="this.deleteTask"/>
+    <TaskList :todos="this.tasks" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
     <ButtonBar @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll" />
   </div>
 </template>
@@ -35,9 +35,9 @@ export default {
       this.tasks = list;
     } else {
       this.tasks = [
-        { name: 'Create a new task', id: 1542895510284 },
-        { name: 'Delete a task', id: 1542895508328 },
-        { name: 'Try leaving the page or refreshing. (The app will remember your tasks using local storage.)', id: 1542895497118 }
+        { name: 'Create a new task', id: 1542895510284, taskChecked: false },
+        { name: 'Delete a task', id: 1542895508328, taskChecked: false },
+        { name: 'Try leaving the page or refreshing. (The app will remember your tasks using local storage.)', id: 1542895497118, taskChecked: false }
       ]
     }
   },
@@ -57,6 +57,7 @@ export default {
       }
     },
     deleteTask: function(e){
+      e.preventDefault();
       const id = parseInt(e.target.id.replace('del-', ''));
       this.tasks = this.tasks.filter(task => {
           return task.id != id;
@@ -92,6 +93,18 @@ export default {
     },
     changeAlerting: function(){
       this.modal.alerting = !this.modal.alerting;
+    },
+    changeChecked: function(e){
+      const checkedTask = this.tasks.filter(task => task.id == e.target.id)[0];
+      if(checkedTask){
+        this.tasks.forEach(task => {
+          if (task.id == checkedTask.id){
+            console.log(task);
+            task.taskChecked ? task.taskChecked = false : task.taskChecked = true; 
+          }
+        });
+        localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
+      }
     }
   },
   components: {

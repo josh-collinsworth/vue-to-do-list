@@ -1,6 +1,16 @@
 <template>
     <ul>
-        <Task v-for="task in todos" :key="task.id" :task-id="task.id" :task="task.name" :todos="todos" @removeTask="removeTask">{{task}}</Task>
+        <Task v-for="task in todos" 
+            :key="task.id" 
+            :task-id="task.id" 
+            :task="task.name" 
+            :todos="todos" 
+            :taskChecked="task.taskChecked" 
+            @removeTask="removeTask"
+            @changeChecked="changeChecked"
+        >
+            {{task}}
+        </Task>
     </ul>
 </template>
 
@@ -17,6 +27,9 @@ export default {
     methods: {
         removeTask: function(e){
             this.$emit('removeTask', e);
+        },
+        changeChecked: function(e){
+            this.$emit('changeChecked', e);
         }
     },
     props: ['todos'],

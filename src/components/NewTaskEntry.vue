@@ -20,11 +20,10 @@ export default {
     methods: {
         addTask: function(){
             if(!this.todos.includes(this.newTask) && this.newTask){
-                this.todos.unshift({name: this.newTask, id: Date.now()});
+                this.todos.unshift({name: this.newTask, id: Date.now(), taskChecked: false});
                 localStorage.setItem('vueToDoList', JSON.stringify(this.todos));
                 this.newTask = '';
                 this.message = ' ';
-                //TO DO: add messaging for blank entry
             } else if (!this.newTask){
                 this.message = '⚠️ Added tasks cannot be blank.'
             } else{

@@ -1,8 +1,8 @@
 <template>
     <transition name="fadeDown">
         <li>
-            <input type="checkbox" :id="taskId" />
-            <label :for="taskId">{{task}}</label>
+            <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
+            <label :for="taskId" >{{task}}</label>
             <button @click="removeTask" class="delete" :id="`del-${taskId}`"></button>
         </li>
     </transition>
@@ -21,7 +21,8 @@ export default {
     props: {
         todos: Array,
         task: String,
-        taskId: Number
+        taskId: Number,
+        taskChecked: Boolean
     },
     calculated: {
         getTaskList(){
@@ -32,6 +33,9 @@ export default {
         removeTask: function(e){
             this.$emit('removeTask', e);
         },
+        changeChecked: function(e){
+            this.$emit('changeChecked', e);
+        }
     },
     components: {
     }
