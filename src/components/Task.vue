@@ -109,6 +109,9 @@ export default {
     button.delete:after {
         transform: rotate(-45deg);
     }
+    button.delete:hover {
+        background: darkred;
+    }
     input[type="checkbox"]{
         position: absolute;
         left: -100vw;

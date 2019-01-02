@@ -7,7 +7,7 @@
     <Explanation />
     <NewTaskEntry :todos="this.tasks"/>
     <TaskList :todos="this.tasks" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
-    <ButtonBar @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll" :allAreChecked="this.allAreChecked()" :anyAreChecked="this.getAnyChecked()"/>
+    <ButtonBar :allAreChecked="this.allAreChecked()" :anyAreChecked="this.getAnyChecked()" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
   </div>
 </template>
 
@@ -48,7 +48,6 @@ export default {
   methods: {
     updateLocalStorage: function(){
       localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
-      console.log(this.anyAreChecked());
     },
     selectAll: function(){
       const inputs = document.querySelectorAll('#app input[type="checkbox"]');
@@ -116,11 +115,11 @@ export default {
         this.updateLocalStorage();
       }
     },
-    getAllChecked: function(e){
+    getAllChecked: function(){
       const allCheckedNow = this.tasks.filter(task => task.taskChecked == true);
       return allCheckedNow.length == this.tasks.length;
     },
-    getAnyChecked: function(e){
+    getAnyChecked: function(){
       const anyCheckedNow = this.tasks.filter(task => task.taskChecked == true);
       return anyCheckedNow.length > 0;
     }
@@ -139,6 +138,8 @@ export default {
 <style>
   :root {
     --jcBlack: #53565a;
+    --jcYellow: #ffd100;
+    --lightGray: #a7a8aa;
   }
   #app {
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
@@ -157,6 +158,7 @@ export default {
   @media(max-width: 624px){
     #app {
       max-width: calc(100% - 24px);
+      font-size: 1.3rem;
     }
   }
   button {
@@ -169,15 +171,17 @@ export default {
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
-    transition: color .15s, background-color .15s;
+    background-color: #fff;
+    transition: all .15s;
   }
   button[disabled]{
     pointer-events: none;
-    opacity: .6;
+    background-color: var(--lightGray);
+    border-color: var(--lightGray);
+    opacity: .5;
   }
-  button:not([disabled]):hover {
-    color: white;
-    background-color: var(--jcBlack);
+  button:not([disabled]):not(.delete):hover {
+    background-color: var(--jcYellow);
   }
   button:first-of-type{
     margin-left: 0;
