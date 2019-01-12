@@ -3,7 +3,7 @@
     <transition name="fadeDown" >
       <Modal v-if="modal.alerting" :type="this.modal.type" :alerting="this.modal.alerting" :modalMessage="this.modal.message" @changeAlerting="changeAlerting" @modalConfirmed="this.modal.type"/>
     </transition>
-    <h1>Vue To-Do List</h1>
+    <h1><input type="text" id="list-title" placeholder='Qvick List (click to rename)' :value='listTitle' @click='this.selectListTitle' @input='this.updateListTitle' /></h1>
     <Explanation />
     <NewTaskEntry :todos="this.tasks"/>
     <TaskList :todos="this.tasks" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
@@ -23,6 +23,7 @@ export default {
   name: 'App',
   data() {
     return {
+      listTitle: '',
       tasks: [],
       modal: {
         type: this.changeAlerting,
@@ -35,6 +36,7 @@ export default {
   },
   created: function(){
     const list = JSON.parse(localStorage.getItem('vueToDoList'));
+    const title = JSON.parse(localStorage.getItem('vueToDoListTitle'));
     if(list){
       this.tasks = list;
     } else {
@@ -44,10 +46,22 @@ export default {
         { name: 'Try leaving the page or refreshing. (The app will remember your tasks using local storage.)', id: 1542895497118, taskChecked: false }
       ]
     }
+    if(title){
+      this.listTitle = title;
+    } else {
+      this.listTitle = '';
+    }
   },
   methods: {
     updateLocalStorage: function(){
       localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
+    },
+    selectListTitle: function(){
+      document.querySelector('#list-title').select();
+    },
+    updateListTitle: function(){
+      this.listTitle = document.querySelector('#list-title').value;
+      localStorage.setItem('vueToDoListTitle', JSON.stringify(this.listTitle));
     },
     selectAll: function(){
       const inputs = document.querySelectorAll('#app input[type="checkbox"]');
@@ -75,13 +89,14 @@ export default {
       this.updateLocalStorage();
     },
     deleteAll: function(){
-      this.modal.message = '⚠️ Delete all tasks? (WARNING: this cannot be undone!)';
+      this.modal.message = '⚠️ Delete all tasks and reset the list? (WARNING: this cannot be undone!)';
       this.modal.alerting = true; 
       this.modal.type = this.deleteAllConfirmed;
     },
     deleteAllConfirmed: function(){
       this.tasks = [];
       localStorage.removeItem('vueToDoList');
+      localStorage.removeItem('vueToDoListTitle');
       location.reload();
     },
     deleteAllChecked: function(){
@@ -155,7 +170,23 @@ export default {
   h1 {
     margin-bottom: 0;
   }
+  h1 input {
+    font-size: 2rem;
+    font-weight: bold;
+    width: 100%;
+    border: none;
+  }
+  h1 input:focus {
+    border-bottom: 3px double;
+    outline: none;
+  }
+  h1 input:placeholder-shown {
+    opacity: .7;
+  }
   @media(max-width: 624px){
+    h1 input {
+      font-size: 1.6rem;
+    }
     #app {
       max-width: calc(100% - 24px);
       font-size: 1.3rem;
