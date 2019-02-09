@@ -1,9 +1,15 @@
 <template>
     <transition name="fadeDown">
-        <li>
+        <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}">
             <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
-            <label :for="taskId" >{{task}}</label>
-            <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="taskChecked ? 0 : -1" :aria-hidden="taskChecked ? false : true"></button>
+            <label v-if="!editingThisTask" :for="taskId" >{{task}}</label>
+            <input v-else @input="updateNewTaskName" @keydown.enter.prevent="handleEdit" @keydown.escape="cancelEdit" :value="task" autofocus onfocus="this.select()" class="editing" type="text" />
+            <div class="button-box"  :class="{'taskIsBeingEdited': taskIsBeingEdited && editingThisTask}">
+                <button @click="cancelEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="cancel" alt="Cancel editing task"><span role="img" aria-label="Cancel editing task" title="Cancel">❌</span></button>
+                <button @click.prevent="handleEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="ok" alt="OK"><span role="img" aria-label="OK" title="OK">🆗</span></button>
+            </div>
+            <button @click.prevent="handleEdit" :disabled="taskChecked || taskIsBeingEdited" class="edit" :class="{'taskIsBeingEdited': taskIsBeingEdited, 'editingThisTask': editingThisTask}" alt="Edit task"><span role="img" aria-label="Edit task" title="Edit task">📝</span></button>
+            <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="tabableWhenChecked" :aria-hidden="taskChecked ? false : true" alt="Delete task" title="Delete task"></button>
         </li>
     </transition>
 </template>
@@ -15,21 +21,23 @@ export default {
     data(){
         return {
             checked: false,
-            toDoList: this.getTaskList
+            newTaskName: ''
         }
     },
     props: {
         todos: Array,
         task: String,
         taskId: Number,
-        taskChecked: Boolean
+        taskChecked: Boolean,
+        taskIsBeingEdited: Boolean,
+        editingThisTask: Boolean
     },
-    calculated: {
-        getTaskList(){
-            return this.props.todos;
-        },
-        isTabable(){
+    computed: {
+        tabableWhenChecked: function(){
             return this.taskChecked ? "0" : "-1";
+        },
+        tabableWhenUnchecked: function(){
+            return this.taskChecked ? "-1" : "0";
         }
     },
     methods: {
@@ -38,9 +46,17 @@ export default {
         },
         changeChecked: function(e){
             this.$emit('changeChecked', e);
+        },
+        handleEdit: function(){
+            this.$emit('editTask', {id: this.taskId, name: this.newTaskName});
+        },
+        cancelEdit: function(){
+            this.newTaskName = '';
+            this.$emit('cancelEdit');
+        },
+        updateNewTaskName: function(e){
+            this.newTaskName = e.target.value;
         }
-    },
-    components: {
     }
 }
 </script>
@@ -52,6 +68,7 @@ export default {
     }
     div, label {
         flex: 1 1 0;
+        max-width: 92%;
     }
     label:before {
         display: inline-block;
@@ -69,7 +86,13 @@ export default {
         transform: translateX(-.5rem);
         z-index: 10;
         background: #fff8c9!important;
-        width: calc(100% + .5rem);
+        /* width: calc(100% + .5rem); */
+    }
+    li.isBeingEdited {
+        opacity: .5;
+    }
+    li.editTarget {
+        opacity: 1!important;
     }
     button.delete {
         transition: .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
@@ -79,7 +102,7 @@ export default {
         border-radius: 100%;
         margin-left: .5rem;
         position: absolute;
-        right: 1rem;
+        right: 0.5rem;
         top: calc(100%);
         width: 2rem;
         height: 2rem;
@@ -137,5 +160,55 @@ export default {
     input[type="checkbox"]:checked  ~ button.delete {
         display: flex;
         top: calc(50% - 1rem);
+    }
+    input.editing {
+        font-family: 'Montserrat';
+        font-size: 1em;
+        margin-left: 1.5em;
+        padding: 0.1em;
+    }
+    button.edit, button.cancel, button.ok {
+        position: relative;
+        top: 0rem;
+        transition: all .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
+        padding: 0;
+        border: none;
+        font-size: 1em;
+        background: inherit;
+    }
+    button.ok, button.edit {
+        margin-left: .5em;
+        top: 0;
+    }
+    button.edit {
+        position: absolute;
+        right: 0.5em;
+        top: calc(50% - .65em);
+    }
+    input[type="checkbox"]:checked ~ button.edit {
+        top: calc(-4em);
+    }
+    div.button-box {
+        z-index: 12;
+        top: calc(-100%);
+        right: 0.5em;
+        position: absolute;
+        width: 2.5em;
+        max-width: 2.5em;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        align-content: center;
+        transition: all .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
+    }
+    div.button-box button {
+        line-height: 1.8em;
+    }
+    .edit.taskIsBeingEdited.editingThisTask {
+        top: calc(100%);
+        right: 0.5em;
+    }
+    div.button-box.taskIsBeingEdited {
+        top: calc(0% + .5em);
     }
 </style>

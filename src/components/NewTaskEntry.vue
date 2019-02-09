@@ -77,12 +77,6 @@ export default {
         border-bottom: 3px double;
         margin-bottom: 0px;
     }
-    /* input:not(:placeholder-shown):before {
-        content: 'osdifh';
-        position: absolute;
-        top: 0;
-        left: 0;
-    } */
     p {
         color: red;        
         margin-bottom: 3rem;

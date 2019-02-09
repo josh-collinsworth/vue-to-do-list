@@ -3,150 +3,186 @@
     <transition name="fadeDown" >
       <Modal v-if="modal.alerting" :type="this.modal.type" :alerting="this.modal.alerting" :modalMessage="this.modal.message" @changeAlerting="changeAlerting" @modalConfirmed="this.modal.type"/>
     </transition>
-    <h1><input type="text" id="list-title" placeholder='Qvick List (click to rename)' :value='listTitle' @click='this.selectListTitle' @input='this.updateListTitle' /></h1>
+    <h1><input type="text" id="list-title" placeholder='Qvick List 📝' :value='listTitle' @click='this.selectListTitle' @input='this.updateListTitle' /></h1>
     <Explanation />
     <NewTaskEntry :todos="this.tasks"/>
-    <TaskList :todos="this.tasks" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
+    <TaskList :todos="this.tasks" :taskIsBeingEdited="this.taskIsBeingEdited" @editTask="this.editTask" @cancelEdit="this.cancelEdit" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
     <ButtonBar :allAreChecked="this.allAreChecked()" :anyAreChecked="this.getAnyChecked()" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
   </div>
 </template>
 
 
 <script>
-import NewTaskEntry from '@/components/NewTaskEntry';
-import TaskList from '@/components/TaskList';
-import Modal from '@/components/Modal';
-import ButtonBar from '@/components/ButtonBar';
-import Explanation from '@/components/Explanation';
+  import NewTaskEntry from '@/components/NewTaskEntry';
+  import TaskList from '@/components/TaskList';
+  import Modal from '@/components/Modal';
+  import ButtonBar from '@/components/ButtonBar';
+  import Explanation from '@/components/Explanation';
 
-export default {
-  name: 'App',
-  data() {
-    return {
-      listTitle: '',
-      tasks: [],
-      modal: {
-        type: this.changeAlerting,
-        message: '',
-        alerting: false,
-      },
-      allAreChecked: this.getAllChecked,
-      anyAreChecked: this.getAnyChecked
-    }
-  },
-  created: function(){
-    const list = JSON.parse(localStorage.getItem('vueToDoList'));
-    const title = JSON.parse(localStorage.getItem('vueToDoListTitle'));
-    if(list){
-      this.tasks = list;
-    } else {
-      this.tasks = [
-        { name: 'Create a new task', id: 1542895510284, taskChecked: false },
-        { name: 'Delete a task', id: 1542895508328, taskChecked: false },
-        { name: 'Try leaving the page or refreshing. (The app will remember your tasks using local storage.)', id: 1542895497118, taskChecked: false }
-      ]
-    }
-    if(title){
-      this.listTitle = title;
-    } else {
-      this.listTitle = '';
-    }
-  },
-  methods: {
-    updateLocalStorage: function(){
-      localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
-    },
-    selectListTitle: function(){
-      document.querySelector('#list-title').select();
-    },
-    updateListTitle: function(){
-      this.listTitle = document.querySelector('#list-title').value;
-      localStorage.setItem('vueToDoListTitle', JSON.stringify(this.listTitle));
-    },
-    selectAll: function(){
-      const inputs = document.querySelectorAll('#app input[type="checkbox"]');
-      let allChecked = true;
-      inputs.forEach(input => {
-        !input.checked ? allChecked = false : '';
-      });
-      if(!allChecked){
-        inputs.forEach(input => input.checked = 'checked');
-        this.tasks.forEach(task => task.taskChecked = true);
-      } else {
-        inputs.forEach(input => {
-          input.checked = false;
-          this.tasks.forEach(task => task.taskChecked = false);
-        });
+  export default {
+    name: 'App',
+    data() {
+      return {
+        listTitle: '',
+        tasks: [],
+        modal: {
+          type: this.changeAlerting,
+          message: '',
+          alerting: false,
+        },
+        allAreChecked: this.getAllChecked,
+        anyAreChecked: this.getAnyChecked,
+        taskIsBeingEdited: false,
+        taskBeingEdited: null,
+        editedTaskName: ''
       }
-      this.updateLocalStorage();
     },
-    deleteTask: function(e){
-      e.preventDefault();
-      const id = parseInt(e.target.id.replace('del-', ''));
-      this.tasks = this.tasks.filter(task => {
-          return task.id != id;
-      });
-      this.updateLocalStorage();
+    created: function(){
+      const list = JSON.parse(localStorage.getItem('vueToDoList'));
+      const title = JSON.parse(localStorage.getItem('vueToDoListTitle'));
+      if(list){
+        this.tasks = list;
+      } else {
+        this.tasks = [
+          { name: 'Create a new task ☝️', id: 1542895510284, taskChecked: false, editingThisTask: false },
+          { name: 'Edit a task 👉', id: 1542895508329, taskChecked: false, editingThisTask: false },
+          { name: 'Check a task 👈', id: 1542895508328, taskChecked: false, editingThisTask: false },
+          { name: 'Delete a checked task 👉', id: 1542895508330, taskChecked: true, editingThisTask: false },
+          { name: 'Try leaving the page or refreshing. 🔄', id: 1542895497118, taskChecked: false, editingThisTask: false }
+        ]
+      }
+      //Make sure the status of editing is not stored in local storage
+      this.tasks.forEach(task => task.editingThisTask = false);
+      if(title){
+        this.listTitle = title;
+      } else {
+        this.listTitle = '';
+      }
     },
-    deleteAll: function(){
-      this.modal.message = '⚠️ Delete all tasks and reset the list? (WARNING: this cannot be undone!)';
-      this.modal.alerting = true; 
-      this.modal.type = this.deleteAllConfirmed;
-    },
-    deleteAllConfirmed: function(){
-      this.tasks = [];
-      localStorage.removeItem('vueToDoList');
-      localStorage.removeItem('vueToDoListTitle');
-      location.reload();
-    },
-    deleteAllChecked: function(){
-      this.modal.message = '⚠️ Delete all checked tasks? (This action cannot be undone!)';
-      this.modal.alerting = true;
-      this.modal.type = this.deleteAllCheckedConfirmed;
-    },
-    deleteAllCheckedConfirmed: function(){
-      const allTasks = Array.from(document.querySelectorAll('input:checked ~ .delete'));
-      const deleteIDs = allTasks.map(ID => {
-        return parseInt(ID.id.replace('del-', ''));
-      });
-      const newTasks = this.tasks.filter(task => {
-        return deleteIDs.indexOf(task.id) >= 0 ? null : task;
-      });
-
-      this.tasks = newTasks;
-      this.updateLocalStorage();
-    },
-    changeAlerting: function(){
-      this.modal.alerting = !this.modal.alerting;
-    },
-    changeChecked: function(e){
-      const checkedTask = this.tasks.filter(task => task.id == e.target.id)[0];
-      if(checkedTask){
-        this.tasks.forEach(task => {
-          if (task.id == checkedTask.id){
-            task.taskChecked ? task.taskChecked = false : task.taskChecked = true; 
-          }
+    methods: {
+      updateLocalStorage: function(){
+        localStorage.setItem('vueToDoList', JSON.stringify(this.tasks));
+      },
+      selectListTitle: function(){
+        document.querySelector('#list-title').select();
+      },
+      updateListTitle: function(){
+        this.listTitle = document.querySelector('#list-title').value;
+        localStorage.setItem('vueToDoListTitle', JSON.stringify(this.listTitle));
+      },
+      selectAll: function(){
+        const inputs = document.querySelectorAll('#app input[type="checkbox"]');
+        let allChecked = true;
+        inputs.forEach(input => {
+          !input.checked ? allChecked = false : '';
+        });
+        if(!allChecked){
+          inputs.forEach(input => input.checked = 'checked');
+          this.tasks.forEach(task => task.taskChecked = true);
+        } else {
+          inputs.forEach(input => {
+            input.checked = false;
+            this.tasks.forEach(task => task.taskChecked = false);
+          });
+        }
+        this.updateLocalStorage();
+      },
+      deleteTask: function(e){
+        const id = parseInt(e.target.id.replace('del-', ''));
+        this.tasks = this.tasks.filter(task => {
+            return task.id != id;
         });
         this.updateLocalStorage();
+      },
+      deleteAll: function(){
+        this.modal.message = '⚠️ Delete all tasks and reset the list? (WARNING: this cannot be undone!)';
+        this.modal.alerting = true; 
+        this.modal.type = this.deleteAllConfirmed;
+      },
+      deleteAllConfirmed: function(){
+        this.tasks = [];
+        localStorage.removeItem('vueToDoList');
+        localStorage.removeItem('vueToDoListTitle');
+        location.reload();
+      },
+      deleteAllChecked: function(){
+        this.modal.message = '⚠️ Delete all checked tasks? (This action cannot be undone!)';
+        this.modal.alerting = true;
+        this.modal.type = this.deleteAllCheckedConfirmed;
+      },
+      deleteAllCheckedConfirmed: function(){
+        const allTasks = Array.from(document.querySelectorAll('input:checked ~ .delete'));
+        const deleteIDs = allTasks.map(ID => {
+          return parseInt(ID.id.replace('del-', ''));
+        });
+        const newTasks = this.tasks.filter(task => {
+          return deleteIDs.indexOf(task.id) >= 0 ? null : task;
+        });
+
+        this.tasks = newTasks;
+        this.updateLocalStorage();
+      },
+      changeAlerting: function(e){
+        if(e){
+          if((e.key == "Escape" && this.modal.alerting) || e.key != "Escape"){
+            this.modal.alerting = !this.modal.alerting;
+          }
+        } else {
+            this.modal.alerting = !this.modal.alerting;
+        }
+      },
+      changeChecked: function(e){
+        const checkedTask = this.tasks.filter(task => task.id == e.target.id)[0];
+        if(checkedTask){
+          this.tasks.forEach(task => {
+            if (task.id == checkedTask.id){
+              task.taskChecked ? task.taskChecked = false : task.taskChecked = true; 
+            }
+          });
+          this.updateLocalStorage();
+        }
+      },
+      getAllChecked: function(){
+        const allCheckedNow = this.tasks.filter(task => task.taskChecked == true);
+        return allCheckedNow.length == this.tasks.length;
+      },
+      getAnyChecked: function(){
+        const anyCheckedNow = this.tasks.filter(task => task.taskChecked == true);
+        return anyCheckedNow.length > 0;
+      },
+      editTask: function(obj){
+        if(!this.taskIsBeingEdited){
+          this.taskIsBeingEdited = true;
+          this.tasks.forEach((task) => {
+            task.id == obj.id ? task.editingThisTask = true : task.editingThisTask = false;
+          });
+          setTimeout(() => {
+            document.querySelector('input.editing').select();
+          }, 20);
+        } else {
+          let oldTasks = this.tasks;
+          oldTasks.forEach((task, index) => {
+            task.id == obj.id && obj.name ? this.tasks[index].name = obj.name : null;
+            task.editingThisTask = false;
+          });
+          this.tasks = oldTasks;
+          this.taskIsBeingEdited = false;
+        }
+        this.updateLocalStorage();
+      },
+      cancelEdit: function(){
+        this.taskIsBeingEdited = false;
+        this.tasks.forEach(task => task.editingThisTask = false);
       }
     },
-    getAllChecked: function(){
-      const allCheckedNow = this.tasks.filter(task => task.taskChecked == true);
-      return allCheckedNow.length == this.tasks.length;
-    },
-    getAnyChecked: function(){
-      const anyCheckedNow = this.tasks.filter(task => task.taskChecked == true);
-      return anyCheckedNow.length > 0;
+    components: {
+      NewTaskEntry, 
+      TaskList,
+      Modal,
+      ButtonBar,
+      Explanation
     }
-  },
-  components: {
-    NewTaskEntry, 
-    TaskList,
-    Modal,
-    ButtonBar,
-    Explanation
   }
-}
 </script>
 
 
@@ -171,21 +207,24 @@ export default {
     margin-bottom: 0;
   }
   h1 input {
-    font-size: 2rem;
+    font-size: calc(1.3rem + 2vw);
     font-weight: bold;
     width: 100%;
     border: none;
+    margin-bottom: -3px;
+    cursor: pointer;
   }
   h1 input:focus {
     border-bottom: 3px double;
     outline: none;
   }
-  h1 input:placeholder-shown {
-    opacity: .7;
+  h1 input:placeholder-shown:after {
+    content: '📝';
+    position: absolute;
   }
   @media(max-width: 624px){
     h1 input {
-      font-size: 1.6rem;
+      font-size: 2.4rem;
     }
     #app {
       max-width: calc(100% - 24px);
@@ -211,8 +250,11 @@ export default {
     border-color: var(--lightGray);
     opacity: .5;
   }
-  button:not([disabled]):not(.delete):hover {
+  button:not([disabled]):not(.delete):not(.edit):not(.cancel):hover {
     background-color: var(--jcYellow);
+  }
+  button.edit:hover, button.cancel:hover, button.delete:hover {
+    transform: scale(1.2);
   }
   button:first-of-type{
     margin-left: 0;
