@@ -67,7 +67,6 @@
         document.querySelector('#list-title').select();
       },
       updateListTitle: function(e){
-        console.log(e.target.value);
         this.listTitle = e.target.value;
         localStorage.setItem('vueToDoListTitle', JSON.stringify(this.listTitle));
       },
