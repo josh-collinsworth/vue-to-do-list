@@ -47,4 +47,7 @@ export default {
     p:first-of-type {
         margin-top: .5em;
     }
+    p a#explanation-link {
+        color: #34657F;
+    }
 </style>

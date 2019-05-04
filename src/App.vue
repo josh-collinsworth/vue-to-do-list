@@ -7,7 +7,7 @@
     <Explanation />
     <NewTaskEntry :todos="this.tasks"/>
     <TaskList :todos="this.tasks" :taskIsBeingEdited="this.taskIsBeingEdited" @editTask="this.editTask" @cancelEdit="this.cancelEdit" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
-    <ButtonBar :allAreChecked="this.allAreChecked()" :anyAreChecked="this.getAnyChecked()" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
+    <ButtonBar :allAreChecked="allAreChecked" :anyAreChecked="getAnyChecked" :areThereTasks="areThereTasks" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
   </div>
 </template>
 
@@ -66,8 +66,9 @@
       selectListTitle: function(){
         document.querySelector('#list-title').select();
       },
-      updateListTitle: function(){
-        this.listTitle = document.querySelector('#list-title').value;
+      updateListTitle: function(e){
+        console.log(e.target.value);
+        this.listTitle = e.target.value;
         localStorage.setItem('vueToDoListTitle', JSON.stringify(this.listTitle));
       },
       selectAll: function(){
@@ -142,14 +143,6 @@
           this.updateLocalStorage();
         }
       },
-      getAllChecked: function(){
-        const allCheckedNow = this.tasks.filter(task => task.taskChecked == true);
-        return allCheckedNow.length == this.tasks.length;
-      },
-      getAnyChecked: function(){
-        const anyCheckedNow = this.tasks.filter(task => task.taskChecked == true);
-        return anyCheckedNow.length > 0;
-      },
       editTask: function(obj){
         if(!this.taskIsBeingEdited){
           this.taskIsBeingEdited = true;
@@ -173,6 +166,19 @@
       cancelEdit: function(){
         this.taskIsBeingEdited = false;
         this.tasks.forEach(task => task.editingThisTask = false);
+      }
+    },
+    computed: {
+      getAllChecked: function(){
+        const allCheckedNow = this.tasks.filter(task => task.taskChecked == true);
+        return allCheckedNow.length == this.tasks.length;
+      },
+      getAnyChecked: function(){
+        const anyCheckedNow = this.tasks.filter(task => task.taskChecked == true);
+        return anyCheckedNow.length > 0;
+      },
+      areThereTasks: function(){
+        return this.tasks.length > 0 ? true : false;
       }
     },
     components: {

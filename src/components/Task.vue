@@ -83,10 +83,13 @@ export default {
         overflow: hidden;
     }
     li:hover {
-        transform: translateX(-.5rem);
+        transform: translateX(-.3rem);
         z-index: 10;
-        background: #fff8c9!important;
+        background: #dbf8ff!important;
         /* width: calc(100% + .5rem); */
+    }
+    li:hover, label:hover {
+        cursor: pointer;
     }
     li.isBeingEdited {
         opacity: .5;
