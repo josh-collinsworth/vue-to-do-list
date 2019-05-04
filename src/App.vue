@@ -7,7 +7,7 @@
     <Explanation />
     <NewTaskEntry :todos="this.tasks"/>
     <TaskList :todos="this.tasks" :taskIsBeingEdited="this.taskIsBeingEdited" @editTask="this.editTask" @cancelEdit="this.cancelEdit" @removeTask="this.deleteTask" @changeChecked="this.changeChecked" />
-    <ButtonBar :allAreChecked="allAreChecked" :anyAreChecked="getAnyChecked" :areThereTasks="areThereTasks" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
+    <ButtonBar :allAreChecked="getAllChecked" :anyAreChecked="getAnyChecked" :areThereTasks="areThereTasks" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
   </div>
 </template>
 
