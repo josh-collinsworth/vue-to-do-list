@@ -78,11 +78,13 @@ export default {
         position: absolute;
     }
     .shift-enter, .shift-leave-to {
-        opacity: .1;
+        opacity: 0;
         transform: translateY(-1.5em);
     }
     .shift-leave-to {
+        transform-origin: top;
         z-index: 50;
+        transform: translateY(-100%);
     }
     .shift-move {
         transition: transform var(--transition-time)!important;
