@@ -1,17 +1,15 @@
 <template>
-    <transition name="fadeDown">
-        <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}">
-            <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
-            <label v-if="!editingThisTask" :for="taskId" >{{task}}</label>
-            <input v-else @input="updateNewTaskName" @keydown.enter.prevent="handleEdit" @keydown.escape="cancelEdit" :value="task" autofocus onfocus="this.select()" class="editing" type="text" />
-            <div class="button-box"  :class="{'taskIsBeingEdited': taskIsBeingEdited && editingThisTask}">
-                <button @click="cancelEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="cancel" alt="Cancel editing task"><span role="img" aria-label="Cancel editing task" title="Cancel">❌</span></button>
-                <button @click.prevent="handleEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="ok" alt="OK"><span role="img" aria-label="OK" title="OK">🆗</span></button>
-            </div>
-            <button @click.prevent="handleEdit" :disabled="taskChecked || taskIsBeingEdited" class="edit" :class="{'taskIsBeingEdited': taskIsBeingEdited, 'editingThisTask': editingThisTask}" alt="Edit task"><span role="img" aria-label="Edit task" title="Edit task">📝</span></button>
-            <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="tabableWhenChecked" :aria-hidden="taskChecked ? false : true" alt="Delete task" title="Delete task"></button>
-        </li>
-    </transition>
+    <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}">
+        <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
+        <label v-if="!editingThisTask" :for="taskId" >{{task}}</label>
+        <input v-else @input="updateNewTaskName" @keydown.enter.prevent="handleEdit" @keydown.escape="cancelEdit" :value="task" autofocus onfocus="this.select()" class="editing" type="text" />
+        <div class="button-box"  :class="{'taskIsBeingEdited': taskIsBeingEdited && editingThisTask}">
+            <button @click="cancelEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="cancel" alt="Cancel editing task"><span role="img" aria-label="Cancel editing task" title="Cancel">❌</span></button>
+            <button @click.prevent="handleEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="ok" alt="OK"><span role="img" aria-label="OK" title="OK">🆗</span></button>
+        </div>
+        <button @click.prevent="handleEdit" :disabled="taskChecked || taskIsBeingEdited" class="edit" :class="{'taskIsBeingEdited': taskIsBeingEdited, 'editingThisTask': editingThisTask}" alt="Edit task"><span role="img" aria-label="Edit task" title="Edit task">📝</span></button>
+        <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="tabableWhenChecked" :aria-hidden="taskChecked ? false : true" alt="Delete task" title="Delete task"></button>
+    </li>
 </template>
 
 
@@ -78,12 +76,10 @@ export default {
         font-size: .9em;
         box-sizing: border-box;
         width: 100%;
-        transition: all .15s ease-out;
-        position: relative;
         overflow: hidden;
     }
     li:hover {
-        transform: translateX(-.3rem);
+        /* transform: scale(1.01); */
         z-index: 10;
         background: #dbf8ff!important;
         /* width: calc(100% + .5rem); */
@@ -91,13 +87,13 @@ export default {
     li:hover, label:hover {
         cursor: pointer;
     }
-    li.isBeingEdited {
+    .isBeingEdited {
         opacity: .5;
     }
-    li.editTarget {
-        opacity: 1!important;
+    .editTarget {
+        opacity: 1;
     }
-    button.delete {
+    .delete {
         transition: .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
         box-sizing: border-box;
         border: 3px solid white;
@@ -120,11 +116,11 @@ export default {
         cursor: pointer;
         padding: 0;
     }
-    button.delete:focus {
+    .delete:focus {
         border: 4px double yellow;
         outline: none;
     }
-    button.delete:before, button.delete:after {
+    .delete:before, .delete:after {
         content: '';
         width: 1rem;
         height: 2px;
@@ -132,10 +128,10 @@ export default {
         transform: rotate(45deg);
         position: absolute;
     }
-    button.delete:after {
+    .delete:after {
         transform: rotate(-45deg);
     }
-    button.delete:hover {
+    .delete:hover {
         background: darkred;
     }
     input[type="checkbox"]{
@@ -170,7 +166,7 @@ export default {
         margin-left: 1.5em;
         padding: 0.1em;
     }
-    button.edit, button.cancel, button.ok {
+    .edit, .cancel, .ok {
         position: relative;
         top: 0rem;
         transition: all .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
@@ -179,19 +175,19 @@ export default {
         font-size: 1em;
         background: inherit;
     }
-    button.ok, button.edit {
+    .ok, .edit {
         margin-left: .5em;
         top: 0;
     }
-    button.edit {
+    .edit {
         position: absolute;
         right: 0.5em;
         top: calc(50% - .65em);
     }
-    input[type="checkbox"]:checked ~ button.edit {
+    input[type="checkbox"]:checked ~ .edit {
         top: calc(-4em);
     }
-    div.button-box {
+    .button-box {
         z-index: 12;
         top: calc(-100%);
         right: 0.5em;
@@ -204,14 +200,14 @@ export default {
         align-content: center;
         transition: all .3s cubic-bezier(0.50, -0.50, 0.2, 1.5);
     }
-    div.button-box button {
+    .button-box button {
         line-height: 1.8em;
     }
     .edit.taskIsBeingEdited.editingThisTask {
         top: calc(100%);
         right: 0.5em;
     }
-    div.button-box.taskIsBeingEdited {
+    .button-box.taskIsBeingEdited {
         top: calc(0% + .5em);
     }
 </style>

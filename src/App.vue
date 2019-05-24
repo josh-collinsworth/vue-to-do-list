@@ -196,6 +196,7 @@
     --jcBlack: #53565a;
     --jcYellow: #ffd100;
     --lightGray: #a7a8aa;
+    --transition-time: .3s;
   }
   #app {
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
