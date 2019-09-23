@@ -47,6 +47,7 @@
           { name: 'Create a new task ☝️', id: 1542895510284, taskChecked: false, editingThisTask: false },
           { name: 'Edit a task 👉', id: 1542895508329, taskChecked: false, editingThisTask: false },
           { name: 'Check a task 👈', id: 1542895508328, taskChecked: false, editingThisTask: false },
+          { name: 'Drag tasks to reorder ↕️', id: 1542895508332, taskChecked: false, editingThisTask: false },
           { name: 'Delete a checked task 👉', id: 1542895508330, taskChecked: true, editingThisTask: false },
           { name: 'Try leaving the page or refreshing. 🔄', id: 1542895497118, taskChecked: false, editingThisTask: false }
         ]

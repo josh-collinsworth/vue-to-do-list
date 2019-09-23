@@ -65,8 +65,8 @@ export default {
         display: flex;
     }
     div, label {
-        flex: 1 1 0;
-        max-width: 92%;
+        flex: 0 1 auto;
+        /* max-width: 92%; */
     }
     label:before {
         display: inline-block;
@@ -83,8 +83,9 @@ export default {
         z-index: 10;
         background: #dbf8ff!important;
         /* width: calc(100% + .5rem); */
+        cursor: move;
     }
-    li:hover, label:hover {
+    label:hover {
         cursor: pointer;
     }
     .isBeingEdited {

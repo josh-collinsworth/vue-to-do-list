@@ -1,28 +1,31 @@
 <template>
     <ul>
-        <transition-group name="shift">
-            <Task v-for="task in todos" 
-                :key="task.id" 
-                :task-id="task.id" 
-                :task="task.name" 
-                :todos="todos" 
-                :taskChecked="task.taskChecked"
-                :taskIsBeingEdited="taskIsBeingEdited"
-                :editingThisTask="task.editingThisTask"
-                @removeTask="removeTask"
-                @changeChecked="changeChecked"
-                @editTask="editTask"
-                @cancelEdit="cancelEdit"
-            >
-                {{task}}
-            </Task>
-        </transition-group>
+        <draggable v-model="todos">
+            <transition-group name="shift">
+                <Task v-for="task in todos" 
+                    :key="task.id" 
+                    :task-id="task.id" 
+                    :task="task.name" 
+                    :todos="todos" 
+                    :taskChecked="task.taskChecked"
+                    :taskIsBeingEdited="taskIsBeingEdited"
+                    :editingThisTask="task.editingThisTask"
+                    @removeTask="removeTask"
+                    @changeChecked="changeChecked"
+                    @editTask="editTask"
+                    @cancelEdit="cancelEdit"
+                >
+                    {{task}}
+                </Task>
+            </transition-group>
+        </draggable>
     </ul>
 </template>
 
 
 <script>
 import Task from '@/components/Task'
+import draggable from 'vuedraggable'
 
 export default {
     name: 'TaskList',
@@ -45,7 +48,7 @@ export default {
         'taskIsBeingEdited': Boolean
     },
     components: {
-        Task
+        Task, draggable
     }
 }
 </script>
