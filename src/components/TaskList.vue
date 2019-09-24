@@ -1,7 +1,7 @@
 <template>
-    <ul>
-        <draggable v-model="todos">
-            <transition-group name="shift">
+    <ul id="taskList">
+        <draggable :todos="todos" >
+            <transition-group name="shift" >
                 <Task v-for="task in todos" 
                     :key="task.id" 
                     :task-id="task.id" 
@@ -14,6 +14,7 @@
                     @changeChecked="changeChecked"
                     @editTask="editTask"
                     @cancelEdit="cancelEdit"
+                    @updateTaskOrder="updateTaskOrder"
                 >
                     {{task}}
                 </Task>
@@ -30,17 +31,20 @@ import draggable from 'vuedraggable'
 export default {
     name: 'TaskList',
     methods: {
-        removeTask: function(e){
+        removeTask(e) {
             this.$emit('removeTask', e);
         },
-        changeChecked: function(e){
+        changeChecked(e) {
             this.$emit('changeChecked', e);
         },
-        editTask: function(id){
+        editTask(id) {
             this.$emit('editTask', id);
         },
-        cancelEdit: function(){
+        cancelEdit() {
             this.$emit('cancelEdit');
+        },
+        updateTaskOrder() {
+            this.$emit('updateTaskOrder', this.todos)
         }
     },
     props: {

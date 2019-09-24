@@ -1,5 +1,5 @@
 <template>
-    <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}">
+    <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}" @dragend="updateTaskOrder">
         <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
         <label v-if="!editingThisTask" :for="taskId" >{{task}}</label>
         <input v-else @input="updateNewTaskName" @keydown.enter.prevent="handleEdit" @keydown.escape="cancelEdit" :value="task" autofocus onfocus="this.select()" class="editing" type="text" />
@@ -31,29 +31,33 @@ export default {
         editingThisTask: Boolean
     },
     computed: {
-        tabableWhenChecked: function(){
+        tabableWhenChecked() {
             return this.taskChecked ? "0" : "-1";
         },
-        tabableWhenUnchecked: function(){
+        tabableWhenUnchecked() {
             return this.taskChecked ? "-1" : "0";
         }
     },
     methods: {
-        removeTask: function(e){
+        removeTask(e) {
             this.$emit('removeTask', e);
         },
-        changeChecked: function(e){
+        changeChecked(e) {
             this.$emit('changeChecked', e);
         },
-        handleEdit: function(){
+        handleEdit() {
             this.$emit('editTask', {id: this.taskId, name: this.newTaskName});
         },
-        cancelEdit: function(){
+        cancelEdit() {
             this.newTaskName = '';
             this.$emit('cancelEdit');
         },
-        updateNewTaskName: function(e){
+        updateNewTaskName(e) {
             this.newTaskName = e.target.value;
+        },
+        updateTaskOrder() {
+            // eslint-disable-next-line
+            this.$emit('updateTaskOrder')
         }
     }
 }
