@@ -1,6 +1,12 @@
 <template>
     <div id="newTaskBar">
-        <input id="newTaskBarInput" type="text" v-model="newTask" @keyup.enter="addTask" placeholder="Add a new task">
+        <input
+            id="newTaskBarInput"
+            type="text"
+            v-model="newTask"
+            @keyup.enter="addTask"
+            placeholder="Add a new task"
+        />
         <button @click="addTask">Add task</button>
         <label for="newTaskBarInput">Add a new task</label>
         <p>{{message}}&nbsp;</p>

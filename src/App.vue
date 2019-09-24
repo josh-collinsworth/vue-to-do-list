@@ -1,13 +1,44 @@
 <template>
   <div id="app" @keyup.esc="changeAlerting">
     <transition name="fadeDown" >
-      <Modal v-if="modal.alerting" :type="modal.type" :alerting="modal.alerting" :modalMessage="modal.message" @changeAlerting="changeAlerting" @modalConfirmed="modal.type"/>
+      <Modal 
+        v-if="modal.alerting" 
+        :type="modal.type"
+        :alerting="modal.alerting"
+        :modalMessage="modal.message"
+        @changeAlerting="changeAlerting"
+        @modalConfirmed="modal.type"
+      />
     </transition>
-    <h1><input type="text" id="list-title" placeholder='Qvick List 📝' :value='listTitle' @click='selectListTitle' @input='updateListTitle' /></h1>
+    <h1>
+      <input 
+        :value='listTitle'
+        @click='selectListTitle'
+        @input='updateListTitle' 
+        type="text" 
+        id="list-title" 
+        placeholder='Qvick List 📝' 
+        />
+      </h1>
     <Explanation />
     <NewTaskEntry :todos="tasks"/>
-    <TaskList :todos="tasks" :taskIsBeingEdited="taskIsBeingEdited" @editTask="editTask" @cancelEdit="cancelEdit" @removeTask="deleteTask" @changeChecked="changeChecked" @updateTaskOrder="updateTaskOrder" />
-    <ButtonBar :allAreChecked="getAllChecked" :anyAreChecked="getAnyChecked" :areThereTasks="areThereTasks" @selectAll="selectAll" @deleteAllChecked="deleteAllChecked" @deleteAll="deleteAll"/>
+    <TaskList 
+      :todos="tasks" 
+      :taskIsBeingEdited="taskIsBeingEdited" 
+      @editTask="editTask" 
+      @cancelEdit="cancelEdit" 
+      @removeTask="deleteTask" 
+      @changeChecked="changeChecked" 
+      @updateTaskOrder="updateTaskOrder" 
+    />
+    <ButtonBar
+      :allAreChecked="getAllChecked"
+      :anyAreChecked="getAnyChecked"
+      :areThereTasks="areThereTasks"
+      @selectAll="selectAll"
+      @deleteAllChecked="deleteAllChecked"
+      @deleteAll="deleteAll"
+    />
   </div>
 </template>
 

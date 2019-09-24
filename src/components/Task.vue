@@ -2,13 +2,50 @@
     <li :disabled="taskIsBeingEdited" :class="{editTarget: editingThisTask}" @dragend="updateTaskOrder">
         <input type="checkbox" @change="changeChecked" :id="taskId" :checked="taskChecked"/>
         <label v-if="!editingThisTask" :for="taskId" >{{task}}</label>
-        <input v-else @input="updateNewTaskName" @keydown.enter.prevent="handleEdit" @keydown.escape="cancelEdit" :value="task" autofocus onfocus="this.select()" class="editing" type="text" />
-        <div class="button-box"  :class="{'taskIsBeingEdited': taskIsBeingEdited && editingThisTask}">
-            <button @click="cancelEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="cancel" alt="Cancel editing task"><span role="img" aria-label="Cancel editing task" title="Cancel">❌</span></button>
-            <button @click.prevent="handleEdit" :disabled="!taskIsBeingEdited || !editingThisTask" class="ok" alt="OK"><span role="img" aria-label="OK" title="OK">🆗</span></button>
+        <input v-else 
+            @input="updateNewTaskName" 
+            @keydown.enter.prevent="handleEdit"
+            @keydown.escape="cancelEdit"
+            :value="task"
+            autofocus
+            onfocus="this.select()"
+            class="editing"
+            type="text" 
+        />
+        <div class="button-box" :class="{'taskIsBeingEdited': taskIsBeingEdited && editingThisTask}">
+            <button 
+                @click="cancelEdit"
+                :disabled="!taskIsBeingEdited || !editingThisTask"
+                class="cancel" alt="Cancel editing task"
+            >
+                <span role="img" aria-label="Cancel editing task" title="Cancel">❌</span>
+            </button>
+            <button 
+                @click.prevent="handleEdit"
+                :disabled="!taskIsBeingEdited || !editingThisTask"
+                class="ok" alt="OK"
+            >
+                <span role="img" aria-label="OK" title="OK">🆗</span>
+            </button>
         </div>
-        <button @click.prevent="handleEdit" :disabled="taskChecked || taskIsBeingEdited" class="edit" :class="{'taskIsBeingEdited': taskIsBeingEdited, 'editingThisTask': editingThisTask}" alt="Edit task"><span role="img" aria-label="Edit task" title="Edit task">📝</span></button>
-        <button @click="removeTask" class="delete" :id="`del-${taskId}`" :tabindex="tabableWhenChecked" :aria-hidden="taskChecked ? false : true" alt="Delete task" title="Delete task"></button>
+        <button
+            @click.prevent="handleEdit"
+            :disabled="taskChecked || taskIsBeingEdited"
+            :class="{'taskIsBeingEdited': taskIsBeingEdited, 'editingThisTask': editingThisTask}"
+            class="edit"
+        >
+            <span role="img" aria-label="Edit task" title="Edit task">📝</span>
+        </button>
+        <button
+            @click="removeTask"
+            :id="`del-${taskId}`"
+            :tabindex="tabableWhenChecked"
+            :aria-hidden="taskChecked ? false : true"
+            aria-label="Delete task"
+            title="Delete task"
+            class="delete"
+            >
+        </button>
     </li>
 </template>
 
